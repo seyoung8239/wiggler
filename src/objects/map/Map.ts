@@ -6,7 +6,14 @@ export class GameMap {
 	worm;
 
 	constructor() {
-		this.worm = new Worm(new Point(0, 0));
+		this.worm = new Worm(new Point(10, 10));
+	}
+
+	render(ctx: CanvasRenderingContext2D) {
+		this.clearMap(ctx);
+
+		this.renderBaseMap(ctx);
+		this.renderWorm(ctx);
 	}
 
 	renderBaseMap(ctx: CanvasRenderingContext2D) {
@@ -32,10 +39,16 @@ export class GameMap {
 		}
 	}
 
-	render(ctx: CanvasRenderingContext2D) {
-		this.clearMap(ctx);
-
-		this.renderBaseMap(ctx);
+	renderWorm(ctx: CanvasRenderingContext2D) {
+		ctx.fillStyle = "saddlebrown";
+		this.worm.bodyParts.forEach(({ x, y }) => {
+			ctx.fillRect(
+				x * MAP_SIZE.UNIT,
+				y * MAP_SIZE.UNIT,
+				MAP_SIZE.UNIT,
+				MAP_SIZE.UNIT,
+			);
+		});
 	}
 
 	clearMap(ctx: CanvasRenderingContext2D) {
