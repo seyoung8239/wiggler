@@ -6,13 +6,17 @@ import { isOppositeDirection } from "../../common/direction/direction.util";
 import { keyboardManager } from "../../common/keyboardManager/keyboardManager";
 import { Point } from "../../common/Point";
 import { MAP_SIZE } from "../gameMap/gameMap.config";
+import { MAP_TYPE, type MapType } from "../gameMap/gameMap.constant";
 
 export class Worm {
 	currentDirection: Direction;
 	bodyParts: Point[] = [];
+	gameMap: MapType[][];
 
-	constructor(point: Point) {
+	constructor(point: Point, gameMap: MapType[][]) {
 		this.currentDirection = DIRECTION.RIGHT;
+
+		this.gameMap = gameMap;
 
 		const { x, y } = point;
 		this.bodyParts[0] = new Point(x, y);
@@ -23,7 +27,7 @@ export class Worm {
 	}
 
 	private lastMoveTime = 0;
-	private moveThrottle = 300;
+	private moveThrottle = 100;
 
 	handleKeyboardEvent() {
 		const currentTime = Date.now();
@@ -36,31 +40,41 @@ export class Worm {
 		if (keyboardManager.isKeyPressed("KeyD")) this.move(DIRECTION.RIGHT);
 	}
 
-	canMove(direction: Direction) {
-		if (isOppositeDirection(direction, this.currentDirection)) return false;
-
-		const nextPoint = Point.getMovedPoint(this.bodyParts[0], direction);
-	}
-
 	move(direction: Direction) {
+		if (isOppositeDirection(direction, this.currentDirection)) return false;
+		const nextPoint = Point.getMovedPoint(this.bodyParts[0], direction);
+		if (this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.GROUND)
+			return false;
+
 		this.currentDirection = direction;
 
 		this.bodyParts[2] = this.bodyParts[1];
 		this.bodyParts[1] = this.bodyParts[0];
-		this.bodyParts[0] = Point.getMovedPoint(this.bodyParts[0], direction);
+		this.bodyParts[0] = nextPoint;
 	}
 
-	shouldFall() {}
-	handleFall() {}
+	shouldFall() {
+		return this.bodyParts.every(
+			(point) => this.gameMap[point.x][point.y + 1] === MAP_TYPE.EMPTY,
+		);
+	}
+	handleFall() {
+		while (true) {
+			if (!this.shouldFall()) return;
+
+			this.bodyParts = this.bodyParts.map((point) =>
+				Point.getMovedPoint(point, DIRECTION.DOWN),
+			);
+		}
+	}
 
 	animate(ctx: CanvasRenderingContext2D) {
-		// if (this.shouldFall) {
-		// 	this.handleFall();
-		// 	return;
-		// }
-
 		this.handleKeyboardEvent();
-		// this.move(this.currentDirection);
+
+		if (this.shouldFall()) {
+			console.log("fall");
+			this.handleFall();
+		}
 
 		ctx.fillStyle = "saddlebrown";
 		this.bodyParts.forEach(({ x, y }) => {

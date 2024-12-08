@@ -10,7 +10,7 @@ export class GameMap {
 		.map(() => new Array(MAP_SIZE.HEIGHT).fill(MAP_TYPE.EMPTY));
 
 	constructor() {
-		this.worm = new Worm(new Point(10, 10));
+		this.worm = new Worm(new Point(10, 10), this.gameMap);
 		this.setMapGround();
 	}
 
@@ -43,7 +43,6 @@ export class GameMap {
 						ctx.fillStyle = "gray";
 						break;
 				}
-				// ctx.fillStyle = "chocolate";
 				ctx.fillRect(
 					x * MAP_SIZE.UNIT,
 					y * MAP_SIZE.UNIT,
