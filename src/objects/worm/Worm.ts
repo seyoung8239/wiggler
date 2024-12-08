@@ -5,18 +5,19 @@ import {
 import { isOppositeDirection } from "../../common/direction/direction.util";
 import { keyboardManager } from "../../common/keyboardManager/keyboardManager";
 import { Point } from "../../common/Point";
+import type { Game } from "../game/game";
 import { MAP_SIZE } from "../game/game.config";
 import { MAP_TYPE, type MapType } from "../game/game.constant";
 
 export class Worm {
 	currentDirection: Direction;
 	bodyParts: Point[] = [];
-	gameMap: MapType[][];
+	game: Game;
 
-	constructor(point: Point, gameMap: MapType[][]) {
+	constructor(point: Point, game: Game) {
 		this.currentDirection = DIRECTION.RIGHT;
 
-		this.gameMap = gameMap;
+		this.game = game;
 
 		const { x, y } = point;
 		this.bodyParts[0] = new Point(x, y);
@@ -28,6 +29,10 @@ export class Worm {
 
 	private lastMoveTime = 0;
 	private moveThrottle = 100;
+
+	get gameMap(): MapType[][] {
+		return this.game.map;
+	}
 
 	handleKeyboardEvent() {
 		const currentTime = Date.now();
@@ -58,6 +63,10 @@ export class Worm {
 		const nextPoint = Point.getMovedPoint(this.bodyParts[0], direction);
 
 		if (this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.BLOCK) {
+			for (let i = 0; i < this.game.blocks.length; i++) {
+				if (!this.game.blocks[i].hasBlockPart(nextPoint)) continue;
+				this.game.blocks[i].destroyBlockPart(nextPoint);
+			}
 		}
 
 		this.currentDirection = direction;

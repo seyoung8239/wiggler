@@ -4,5 +4,11 @@ export enum DIRECTION {
 	LEFT = 2,
 	RIGHT = 3,
 }
+export const ALL_DIRECTION = [
+	DIRECTION.UP,
+	DIRECTION.DOWN,
+	DIRECTION.LEFT,
+	DIRECTION.RIGHT,
+];
 
 export type Direction = DIRECTION;

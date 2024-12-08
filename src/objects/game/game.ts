@@ -10,21 +10,25 @@ import { MAP_TYPE, type MapType } from "./game.constant";
 import { BLOCK_SIZE, puzzle, PUZZLE_SIZE } from "../../puzzles/1";
 import { Block } from "../block/Block";
 
-export class GameMap {
+export class Game {
 	worm;
 	blocks: Block[] = [];
 	map: MapType[][] = new Array(MAP_SIZE.WIDTH)
 		.fill(0)
 		.map(() => new Array(MAP_SIZE.HEIGHT).fill(MAP_TYPE.EMPTY));
-	nextBlockId = 0;
+	private _nextBlockId = 0;
 
 	constructor() {
 		this.worm = new Worm(
 			new Point(WORM_START_POSITION.x, WORM_START_POSITION.y),
-			this.map,
+			this,
 		);
 		this.setGround();
 		this.setPuzzleAndBlock();
+	}
+
+	public get nextBlockId() {
+		return this._nextBlockId++;
 	}
 
 	setGround() {
@@ -54,9 +58,7 @@ export class GameMap {
 			}
 		}
 
-		this.blocks.push(
-			new Block(this.nextBlockId++, initialBlockParts, this.map),
-		);
+		this.blocks.push(new Block(this.nextBlockId, initialBlockParts, this));
 	}
 
 	render(ctx: CanvasRenderingContext2D) {

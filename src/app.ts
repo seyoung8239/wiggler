@@ -1,4 +1,4 @@
-import { GameMap } from "./objects/game/game";
+import { Game } from "./objects/game/game";
 
 class App {
 	canvas;
@@ -15,7 +15,7 @@ class App {
 		document.body.appendChild(this.canvas);
 		this.ctx = this.canvas.getContext("2d")!;
 
-		this.game = new GameMap();
+		this.game = new Game();
 
 		window.addEventListener("resize", this.resize.bind(this), false);
 		this.resize();
