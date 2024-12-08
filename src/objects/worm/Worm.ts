@@ -5,8 +5,8 @@ import {
 import { isOppositeDirection } from "../../common/direction/direction.util";
 import { keyboardManager } from "../../common/keyboardManager/keyboardManager";
 import { Point } from "../../common/Point";
-import { MAP_SIZE } from "../gameMap/gameMap.config";
-import { MAP_TYPE, type MapType } from "../gameMap/gameMap.constant";
+import { MAP_SIZE } from "../game/game.config";
+import { MAP_TYPE, type MapType } from "../game/game.constant";
 
 export class Worm {
 	currentDirection: Direction;
@@ -57,8 +57,8 @@ export class Worm {
 
 		const nextPoint = Point.getMovedPoint(this.bodyParts[0], direction);
 
-		if (this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.BLOCK)
-			this.gameMap[nextPoint.x][nextPoint.y] = MAP_TYPE.EMPTY;
+		if (this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.BLOCK) {
+		}
 
 		this.currentDirection = direction;
 

@@ -9,6 +9,10 @@ export class Point {
 		this.y = y;
 	}
 
+	isSamePoint(point: Point) {
+		return this.x === point.x && this.y === point.y;
+	}
+
 	static getMovedPoint(point: Point, direction: Direction) {
 		const { x, y } = point;
 		switch (direction) {
