@@ -1,6 +1,11 @@
 import { Point } from "../../common/Point";
 import { Worm } from "../worm/Worm";
-import { BLOCK_START_POSITION, MAP_SIZE } from "./gameMap.config";
+import {
+	BLOCK_START_POSITION,
+	MAP_SIZE,
+	PUZZLE_START_POSITION,
+	WORM_START_POSITION,
+} from "./gameMap.config";
 import { MAP_TYPE, type MapType } from "./gameMap.constant";
 import { puzzle, PUZZLE_SIZE } from "../../puzzles/1";
 
@@ -11,9 +16,12 @@ export class GameMap {
 		.map(() => new Array(MAP_SIZE.HEIGHT).fill(MAP_TYPE.EMPTY));
 
 	constructor() {
-		this.worm = new Worm(new Point(10, 10), this.gameMap);
+		this.worm = new Worm(
+			new Point(WORM_START_POSITION.x, WORM_START_POSITION.y),
+			this.gameMap,
+		);
 		this.setGround();
-		this.setPuzzle();
+		this.setPuzzleAndBlock();
 	}
 
 	setGround() {
@@ -24,12 +32,16 @@ export class GameMap {
 		}
 	}
 
-	setPuzzle() {
+	setPuzzleAndBlock() {
 		for (let y = 0; y < PUZZLE_SIZE.HEIGHT; y++) {
 			for (let x = 0; x < PUZZLE_SIZE.WIDTH; x++) {
+				this.gameMap[BLOCK_START_POSITION.x + x][BLOCK_START_POSITION.y + y] =
+					MAP_TYPE.BLOCK;
+
 				if (puzzle[y][x] === 1) {
-					this.gameMap[BLOCK_START_POSITION.x + x][BLOCK_START_POSITION.y + y] =
-						MAP_TYPE.BLOCK;
+					this.gameMap[PUZZLE_START_POSITION.x + x][
+						PUZZLE_START_POSITION.y + y
+					] = MAP_TYPE.PUZZLE;
 				}
 			}
 		}
@@ -50,10 +62,13 @@ export class GameMap {
 						ctx.fillStyle = "chocolate";
 						break;
 					case MAP_TYPE.GROUND:
-						ctx.fillStyle = "saddlebrown";
+						ctx.fillStyle = "#2b1212";
+						break;
+					case MAP_TYPE.PUZZLE:
+						ctx.fillStyle = "gold";
 						break;
 					case MAP_TYPE.BLOCK:
-						ctx.fillStyle = "gold";
+						ctx.fillStyle = "saddlebrown";
 						break;
 				}
 				ctx.fillRect(

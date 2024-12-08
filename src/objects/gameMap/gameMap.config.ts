@@ -1,8 +1,9 @@
 export const MAP_SIZE = {
-	WIDTH: 50,
-	HEIGHT: 20,
+	WIDTH: 25,
+	HEIGHT: 18,
 	UNIT: 20,
 } as const;
 
-export const WORM_START_POSITION = { x: 15, y: 15 };
-export const BLOCK_START_POSITION = { x: 20, y: 11 };
+export const PUZZLE_START_POSITION = { x: 3, y: 9 };
+export const WORM_START_POSITION = { x: 13, y: 9 };
+export const BLOCK_START_POSITION = { x: 16, y: 9 };

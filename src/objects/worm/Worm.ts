@@ -45,6 +45,7 @@ export class Worm {
 		const nextPoint = Point.getMovedPoint(this.bodyParts[0], direction);
 		if (
 			this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.GROUND ||
+			this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.PUZZLE ||
 			this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.BLOCK
 		)
 			return false;
@@ -68,7 +69,10 @@ export class Worm {
 			[DIRECTION.UP, DIRECTION.DOWN, DIRECTION.LEFT, DIRECTION.RIGHT].some(
 				(direction) => {
 					const nextPoint = Point.getMovedPoint(bodyPart, direction);
-					return this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.BLOCK;
+					return (
+						this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.BLOCK ||
+						this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.PUZZLE
+					);
 				},
 			);
 
@@ -98,7 +102,7 @@ export class Worm {
 			this.handleFall();
 		}
 
-		ctx.fillStyle = "saddlebrown";
+		ctx.fillStyle = "sandybrown	";
 		this.bodyParts.forEach(({ x, y }) => {
 			ctx.fillRect(
 				x * MAP_SIZE.UNIT,
