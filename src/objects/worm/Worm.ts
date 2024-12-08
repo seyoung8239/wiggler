@@ -40,12 +40,22 @@ export class Worm {
 		if (keyboardManager.isKeyPressed("KeyD")) this.move(DIRECTION.RIGHT);
 	}
 
-	move(direction: Direction) {
+	canMove(direction: Direction) {
 		if (isOppositeDirection(direction, this.currentDirection)) return false;
 		const nextPoint = Point.getMovedPoint(this.bodyParts[0], direction);
-		if (this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.GROUND)
+		if (
+			this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.GROUND ||
+			this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.BLOCK
+		)
 			return false;
 
+		return true;
+	}
+
+	move(direction: Direction) {
+		if (!this.canMove(direction)) return;
+
+		const nextPoint = Point.getMovedPoint(this.bodyParts[0], direction);
 		this.currentDirection = direction;
 
 		this.bodyParts[2] = this.bodyParts[1];
@@ -54,10 +64,22 @@ export class Worm {
 	}
 
 	shouldFall() {
+		const isBlockNear = (bodyPart: Point) =>
+			[DIRECTION.UP, DIRECTION.DOWN, DIRECTION.LEFT, DIRECTION.RIGHT].some(
+				(direction) => {
+					const nextPoint = Point.getMovedPoint(bodyPart, direction);
+					return this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.BLOCK;
+				},
+			);
+
+		const isStickToBlock = this.bodyParts.slice(0, 2).some(isBlockNear);
+		if (isStickToBlock) return false;
+
 		return this.bodyParts.every(
 			(point) => this.gameMap[point.x][point.y + 1] === MAP_TYPE.EMPTY,
 		);
 	}
+
 	handleFall() {
 		while (true) {
 			if (!this.shouldFall()) return;
