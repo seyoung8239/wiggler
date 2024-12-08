@@ -13,16 +13,16 @@ export class Point {
 		const { x, y } = point;
 		switch (direction) {
 			case DIRECTION.UP:
-				return new Point(x, y + 1);
-
-			case DIRECTION.DOWN:
 				return new Point(x, y - 1);
 
+			case DIRECTION.DOWN:
+				return new Point(x, y + 1);
+
 			case DIRECTION.RIGHT:
-				return new Point(x - 1, y);
+				return new Point(x + 1, y);
 
 			case DIRECTION.LEFT:
-				return new Point(x + 1, y);
+				return new Point(x - 1, y);
 		}
 	}
 }

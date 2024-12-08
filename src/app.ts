@@ -1,4 +1,4 @@
-import { GameMap } from "./objects/map/Map";
+import { GameMap } from "./objects/gameMap/GameMap";
 
 class App {
 	canvas;
