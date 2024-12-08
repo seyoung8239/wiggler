@@ -22,26 +22,13 @@ export class Block {
 		return this.game.map;
 	}
 
-	shouldFall() {
-		return this.blockParts.every(
-			(point) => this.gameMap[point.x][point.y + 1] === MAP_TYPE.EMPTY,
-		);
-	}
-
-	handleFall() {
-		while (true) {
-			if (!this.shouldFall()) return;
-
-			this.blockParts = this.blockParts.map((point) =>
-				Point.getMovedPoint(point, DIRECTION.DOWN),
-			);
-		}
-	}
-
 	private removeBlockPart(blockPart: Point) {
+		if (!this.hasBlockPart(blockPart)) return;
+
 		this.blockParts = this.blockParts.filter(
 			(point) => !point.isSamePoint(blockPart),
 		);
+		this.game.map[blockPart.x][blockPart.y] = MAP_TYPE.EMPTY;
 	}
 
 	hasBlockPart(point: Point) {
@@ -90,11 +77,24 @@ export class Block {
 		this.game.blocks.push(seperatedBlock);
 	}
 
-	animate(ctx: CanvasRenderingContext2D) {
-		if (this.shouldFall()) {
-			console.log("fall");
-			this.handleFall();
+	shouldFall() {
+		return this.blockParts.every(
+			(point) => this.gameMap[point.x][point.y + 1] === MAP_TYPE.EMPTY,
+		);
+	}
+
+	handleFall() {
+		while (true) {
+			if (!this.shouldFall()) return;
+
+			this.blockParts = this.blockParts.map((point) =>
+				Point.getMovedPoint(point, DIRECTION.DOWN),
+			);
 		}
+	}
+
+	animate(ctx: CanvasRenderingContext2D) {
+		if (this.shouldFall()) this.handleFall();
 
 		this.blockParts.forEach((point) => {
 			this.gameMap[point.x][point.y] = MAP_TYPE.BLOCK;

@@ -28,7 +28,7 @@ export class Worm {
 	}
 
 	private lastMoveTime = 0;
-	private moveThrottle = 100;
+	private moveThrottle = 300;
 
 	get gameMap(): MapType[][] {
 		return this.game.map;
@@ -45,6 +45,27 @@ export class Worm {
 		if (keyboardManager.isKeyPressed("KeyD")) this.move(DIRECTION.RIGHT);
 	}
 
+	move(direction: Direction) {
+		if (!this.canMove(direction)) return;
+
+		const nextPoint = Point.getMovedPoint(this.bodyParts[0], direction);
+
+		if (this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.BLOCK) {
+			for (let i = 0; i < this.game.blocks.length; i++) {
+				if (!this.game.blocks[i].hasBlockPart(nextPoint)) continue;
+
+				this.game.blocks[i].destroyBlockPart(nextPoint);
+				break;
+			}
+		}
+
+		this.currentDirection = direction;
+
+		this.game.map[this.bodyParts[2].x][this.bodyParts[2].y] = MAP_TYPE.EMPTY;
+		this.bodyParts[2] = this.bodyParts[1];
+		this.bodyParts[1] = this.bodyParts[0];
+		this.bodyParts[0] = nextPoint;
+	}
 	canMove(direction: Direction) {
 		if (isOppositeDirection(direction, this.currentDirection)) return false;
 		const nextPoint = Point.getMovedPoint(this.bodyParts[0], direction);
@@ -55,25 +76,6 @@ export class Worm {
 			return false;
 
 		return true;
-	}
-
-	move(direction: Direction) {
-		if (!this.canMove(direction)) return;
-
-		const nextPoint = Point.getMovedPoint(this.bodyParts[0], direction);
-
-		if (this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.BLOCK) {
-			for (let i = 0; i < this.game.blocks.length; i++) {
-				if (!this.game.blocks[i].hasBlockPart(nextPoint)) continue;
-				this.game.blocks[i].destroyBlockPart(nextPoint);
-			}
-		}
-
-		this.currentDirection = direction;
-
-		this.bodyParts[2] = this.bodyParts[1];
-		this.bodyParts[1] = this.bodyParts[0];
-		this.bodyParts[0] = nextPoint;
 	}
 
 	shouldFall() {
@@ -114,7 +116,11 @@ export class Worm {
 			this.handleFall();
 		}
 
-		ctx.fillStyle = "sandybrown	";
+		this.bodyParts.forEach((point) => {
+			this.gameMap[point.x][point.y] = MAP_TYPE.WORM;
+		});
+
+		ctx.fillStyle = "sandybrown";
 		this.bodyParts.forEach(({ x, y }) => {
 			ctx.fillRect(
 				x * MAP_SIZE.UNIT,

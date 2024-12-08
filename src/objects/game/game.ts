@@ -23,32 +23,14 @@ export class Game {
 			new Point(WORM_START_POSITION.x, WORM_START_POSITION.y),
 			this,
 		);
-		this.setGround();
-		this.setPuzzleAndBlock();
+		this.initBlock();
 	}
 
 	public get nextBlockId() {
 		return this._nextBlockId++;
 	}
 
-	setGround() {
-		for (let x = 0; x < MAP_SIZE.WIDTH; x++) {
-			for (let y = MAP_SIZE.HEIGHT - 1; y > MAP_SIZE.HEIGHT - 4; y--) {
-				this.map[x][y] = MAP_TYPE.GROUND;
-			}
-		}
-	}
-
-	setPuzzleAndBlock() {
-		for (let y = 0; y < PUZZLE_SIZE.HEIGHT; y++) {
-			for (let x = 0; x < PUZZLE_SIZE.WIDTH; x++) {
-				if (puzzle[y][x] === 1) {
-					this.map[PUZZLE_START_POSITION.x + x][PUZZLE_START_POSITION.y + y] =
-						MAP_TYPE.PUZZLE;
-				}
-			}
-		}
-
+	initBlock() {
 		const initialBlockParts = [];
 		for (let y = 0; y < BLOCK_SIZE.HEIGHT; y++) {
 			for (let x = 0; x < BLOCK_SIZE.WIDTH; x++) {
@@ -64,9 +46,31 @@ export class Game {
 	render(ctx: CanvasRenderingContext2D) {
 		this.clearMap(ctx);
 
+		this.setGround();
+		this.setPuzzle();
+
 		this.renderBaseMap(ctx);
-		this.worm.animate(ctx);
+
 		this.blocks.forEach((block) => block.animate(ctx));
+		this.worm.animate(ctx);
+	}
+
+	setGround() {
+		for (let x = 0; x < MAP_SIZE.WIDTH; x++) {
+			for (let y = MAP_SIZE.HEIGHT - 1; y > MAP_SIZE.HEIGHT - 4; y--) {
+				this.map[x][y] = MAP_TYPE.GROUND;
+			}
+		}
+	}
+	setPuzzle() {
+		for (let y = 0; y < PUZZLE_SIZE.HEIGHT; y++) {
+			for (let x = 0; x < PUZZLE_SIZE.WIDTH; x++) {
+				if (puzzle[y][x] === 1) {
+					this.map[PUZZLE_START_POSITION.x + x][PUZZLE_START_POSITION.y + y] =
+						MAP_TYPE.PUZZLE;
+				}
+			}
+		}
 	}
 
 	renderBaseMap(ctx: CanvasRenderingContext2D) {
@@ -83,6 +87,7 @@ export class Game {
 						ctx.fillStyle = "gold";
 						break;
 				}
+
 				ctx.fillRect(
 					x * MAP_SIZE.UNIT,
 					y * MAP_SIZE.UNIT,
@@ -90,13 +95,13 @@ export class Game {
 					MAP_SIZE.UNIT,
 				);
 
-				ctx.strokeStyle = "darkred";
-				ctx.strokeRect(
-					x * MAP_SIZE.UNIT,
-					y * MAP_SIZE.UNIT,
-					MAP_SIZE.UNIT,
-					MAP_SIZE.UNIT,
-				);
+				// ctx.strokeStyle = "darkred";
+				// ctx.strokeRect(
+				// 	x * MAP_SIZE.UNIT,
+				// 	y * MAP_SIZE.UNIT,
+				// 	MAP_SIZE.UNIT,
+				// 	MAP_SIZE.UNIT,
+				// );
 			}
 		}
 	}
@@ -108,5 +113,11 @@ export class Game {
 			MAP_SIZE.WIDTH * MAP_SIZE.UNIT,
 			MAP_SIZE.HEIGHT * MAP_SIZE.UNIT,
 		);
+
+		for (let x = 0; x < MAP_SIZE.WIDTH; x++) {
+			for (let y = 0; y < MAP_SIZE.HEIGHT; y++) {
+				this.map[x][y] = MAP_TYPE.EMPTY;
+			}
+		}
 	}
 }
