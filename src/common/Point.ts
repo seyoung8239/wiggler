@@ -29,4 +29,10 @@ export class Point {
 				return new Point(x - 1, y);
 		}
 	}
+
+	static isCollided(pointList1: Point[], pointList2: Point[]) {
+		return pointList1.some((point1) =>
+			pointList2.some((point2) => point1.isSamePoint(point2)),
+		);
+	}
 }

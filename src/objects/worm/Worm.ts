@@ -48,54 +48,89 @@ export class Worm {
 	move(direction: Direction) {
 		if (!this.canMove(direction)) return;
 
-		const nextPoint = Point.getMovedPoint(this.bodyParts[0], direction);
-
-		if (this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.BLOCK) {
-			for (let i = 0; i < this.game.blocks.length; i++) {
-				if (!this.game.blocks[i].hasBlockPart(nextPoint)) continue;
-
-				this.game.blocks[i].destroyBlockPart(nextPoint);
-				break;
-			}
-		}
-
+		const nextHeadPoint = Point.getMovedPoint(this.bodyParts[0], direction);
 		this.currentDirection = direction;
 
-		this.game.map[this.bodyParts[2].x][this.bodyParts[2].y] = MAP_TYPE.EMPTY;
-		this.bodyParts[2] = this.bodyParts[1];
-		this.bodyParts[1] = this.bodyParts[0];
-		this.bodyParts[0] = nextPoint;
+		const destroyBlockIfCollision = () => {
+			for (let i = 0; i < this.game.blocks.length; i++) {
+				if (!this.game.blocks[i].hasBlockPart(nextHeadPoint)) continue;
+				this.game.blocks[i].destroyBlockPart(nextHeadPoint);
+				break;
+			}
+		};
+		destroyBlockIfCollision();
+
+		const moveBodyParts = () => {
+			this.bodyParts[2] = this.bodyParts[1];
+			this.bodyParts[1] = this.bodyParts[0];
+			this.bodyParts[0] = nextHeadPoint;
+		};
+		moveBodyParts();
 	}
 	canMove(direction: Direction) {
 		if (isOppositeDirection(direction, this.currentDirection)) return false;
-		const nextPoint = Point.getMovedPoint(this.bodyParts[0], direction);
+		const nextHeadPoint = Point.getMovedPoint(this.bodyParts[0], direction);
+
 		if (
-			this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.GROUND ||
-			this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.PUZZLE
+			this.gameMap[nextHeadPoint.x][nextHeadPoint.y] === MAP_TYPE.GROUND ||
+			this.gameMap[nextHeadPoint.x][nextHeadPoint.y] === MAP_TYPE.PUZZLE
 		)
 			return false;
 
 		return true;
 	}
 
+	isColiidedWithObject(parts: Point[]) {
+		return (
+			this.isCollidedWithBlock(parts) ||
+			this.isCollidedWithPuzzle(parts) ||
+			this.isCollidedWithGround(parts)
+		);
+	}
+	isCollidedWithBlock(parts: Point[]) {
+		return this.game.blocks.some((block) =>
+			Point.isCollided(block.blockParts, parts),
+		);
+	}
+	isCollidedWithPuzzle(parts: Point[]) {
+		return parts.some(
+			(part) => this.game.map[part.x][part.y] === MAP_TYPE.PUZZLE,
+		);
+	}
+	isCollidedWithGround(parts: Point[]) {
+		return parts.some(
+			(part) => this.game.map[part.x][part.y] === MAP_TYPE.GROUND,
+		);
+	}
+
 	shouldFall() {
-		const isBlockNear = (bodyPart: Point) =>
+		const isNearObject = (bodyPart: Point) =>
 			[DIRECTION.UP, DIRECTION.DOWN, DIRECTION.LEFT, DIRECTION.RIGHT].some(
 				(direction) => {
-					const nextPoint = Point.getMovedPoint(bodyPart, direction);
-					return (
-						this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.BLOCK ||
-						this.gameMap[nextPoint.x][nextPoint.y] === MAP_TYPE.PUZZLE
+					const nearPoint = Point.getMovedPoint(bodyPart, direction);
+
+					const isPuzzleNear =
+						this.gameMap[nearPoint.x][nearPoint.y] === MAP_TYPE.PUZZLE;
+					const isBlockNear = this.game.blocks.some((block) =>
+						block.hasBlockPart(nearPoint),
 					);
+
+					if (isPuzzleNear) return true;
+					if (isBlockNear) return true;
+
+					return false;
 				},
 			);
 
-		const isStickToBlock = this.bodyParts.slice(0, 2).some(isBlockNear);
-		if (isStickToBlock) return false;
+		const isStickToObject = this.bodyParts.slice(0, 2).some(isNearObject);
+		if (isStickToObject) return false;
 
-		return this.bodyParts.every(
-			(point) => this.gameMap[point.x][point.y + 1] === MAP_TYPE.EMPTY,
+		const nextBodyParts = this.bodyParts.map((point) =>
+			Point.getMovedPoint(point, DIRECTION.DOWN),
 		);
+		if (this.isColiidedWithObject(nextBodyParts)) return false;
+
+		return true;
 	}
 
 	handleFall() {
@@ -111,10 +146,7 @@ export class Worm {
 	animate(ctx: CanvasRenderingContext2D) {
 		this.handleKeyboardEvent();
 
-		if (this.shouldFall()) {
-			console.log("fall");
-			this.handleFall();
-		}
+		this.handleFall();
 
 		this.bodyParts.forEach((point) => {
 			this.gameMap[point.x][point.y] = MAP_TYPE.WORM;
