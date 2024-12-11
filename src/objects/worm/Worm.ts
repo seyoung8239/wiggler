@@ -25,20 +25,14 @@ export class Worm {
 		this.bodyParts[1] = new Point(x - 1, y);
 		this.bodyParts[2] = new Point(x - 2, y);
 
-		this.handleKeyboardEvent();
+		this.bindKeyboardEvent();
 	}
 
-	private lastMoveTime = 0;
-	private moveThrottle = 300;
-	handleKeyboardEvent() {
-		const currentTime = Date.now();
-		if (currentTime - this.lastMoveTime < this.moveThrottle) return;
-		this.lastMoveTime = currentTime;
-
-		if (keyboardManager.isKeyPressed("KeyW")) this.move(DIRECTION.UP);
-		if (keyboardManager.isKeyPressed("KeyS")) this.move(DIRECTION.DOWN);
-		if (keyboardManager.isKeyPressed("KeyA")) this.move(DIRECTION.LEFT);
-		if (keyboardManager.isKeyPressed("KeyD")) this.move(DIRECTION.RIGHT);
+	bindKeyboardEvent() {
+		keyboardManager.bindKey("ArrowUp", () => this.move(DIRECTION.UP));
+		keyboardManager.bindKey("ArrowDown", () => this.move(DIRECTION.DOWN));
+		keyboardManager.bindKey("ArrowLeft", () => this.move(DIRECTION.LEFT));
+		keyboardManager.bindKey("ArrowRight", () => this.move(DIRECTION.RIGHT));
 	}
 
 	isColiidedWithObject(parts: Point[]) {
@@ -153,8 +147,6 @@ export class Worm {
 	}
 
 	animate(ctx: CanvasRenderingContext2D) {
-		this.handleKeyboardEvent();
-
 		this.handleFall();
 
 		ctx.fillStyle = "sandybrown";

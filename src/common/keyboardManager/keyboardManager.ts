@@ -14,6 +14,14 @@ class KeyboardManager {
 	isKeyPressed(keyCode: string) {
 		return !!this.keys[keyCode];
 	}
+
+	bindKey(keyCode: string, callback: () => void) {
+		window.addEventListener("keydown", (event) => {
+			if (event.code === keyCode) {
+				callback();
+			}
+		});
+	}
 }
 
 export const keyboardManager = new KeyboardManager();
