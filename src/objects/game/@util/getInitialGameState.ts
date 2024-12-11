@@ -1,5 +1,5 @@
 import { Point } from "../../../common/Point";
-import { PUZZLE_SIZE, puzzle } from "../../../puzzles/1";
+import { BLOCK_SIZE, PUZZLE_SIZE, puzzle } from "../../../puzzles/1";
 import { Block } from "../../block/Block";
 import { Worm } from "../../worm/Worm";
 import type { Game } from "../game";
@@ -7,6 +7,7 @@ import {
 	MAP_SIZE,
 	WORM_START_POSITION,
 	PUZZLE_START_POSITION,
+	BLOCK_START_POSITION,
 } from "../@model/game.config";
 import { MAP_TYPE, type MapType } from "../@model/game.constant";
 
@@ -54,13 +55,11 @@ const getInitialWorm = (game: Game) => {
 
 const getInitialBlock = (game: Game) => {
 	const initialBlockParts = [];
-	for (let y = 0; y < PUZZLE_SIZE.HEIGHT; y++) {
-		for (let x = 0; x < PUZZLE_SIZE.WIDTH; x++) {
-			if (puzzle[y][x] === 1) {
-				initialBlockParts.push(
-					new Point(PUZZLE_START_POSITION.x + x, PUZZLE_START_POSITION.y + y),
-				);
-			}
+	for (let y = 0; y < BLOCK_SIZE.HEIGHT; y++) {
+		for (let x = 0; x < BLOCK_SIZE.WIDTH; x++) {
+			initialBlockParts.push(
+				new Point(BLOCK_START_POSITION.x + x, BLOCK_START_POSITION.y + y),
+			);
 		}
 	}
 
