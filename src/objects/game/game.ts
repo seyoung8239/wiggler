@@ -3,13 +3,13 @@ import type { MapType } from "./@model/game.constant";
 import type { Block } from "../block/Block";
 import { GameRenderer } from "./gameRenderer";
 import { getInitialGameState } from "./@util/getInitialGameState";
+import { Point } from "../../common/Point";
 import {
 	ANSWER_START_POSITION,
+	MAP_SIZE,
 	PUZZLE_SIZE,
 	puzzleChecksum,
-} from "../../puzzles/1";
-import { Point } from "../../common/Point";
-import { MAP_SIZE } from "./@model/game.config";
+} from "./@model/game.config";
 
 export class Game {
 	gameRenderer: GameRenderer;

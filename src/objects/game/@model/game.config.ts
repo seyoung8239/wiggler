@@ -1,3 +1,5 @@
+export * from "../../../puzzles/1";
+
 export const MAP_SIZE = {
 	WIDTH: 25,
 	HEIGHT: 18,

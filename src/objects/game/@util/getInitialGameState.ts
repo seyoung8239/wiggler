@@ -1,16 +1,16 @@
 import { Point } from "../../../common/Point";
-import {
-	BLOCK_SIZE,
-	BLOCK_START_POSITION,
-	PUZZLE_SIZE,
-	PUZZLE_START_POSITION,
-	WORM_START_POSITION,
-	puzzle,
-} from "../../../puzzles/1";
 import { Block } from "../../block/Block";
 import { Worm } from "../../worm/Worm";
 import type { Game } from "../game";
-import { MAP_SIZE } from "../@model/game.config";
+import {
+	BLOCK_SIZE,
+	BLOCK_START_POSITION,
+	MAP_SIZE,
+	puzzle,
+	PUZZLE_SIZE,
+	PUZZLE_START_POSITION,
+	WORM_START_POSITION,
+} from "../@model/game.config";
 import { MAP_TYPE, type MapType } from "../@model/game.constant";
 
 export const getInitialGameState = (game: Game) => ({
