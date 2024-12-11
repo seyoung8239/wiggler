@@ -7,6 +7,7 @@ import { Point } from "../../common/Point";
 import {
 	ANSWER_START_POSITION,
 	MAP_SIZE,
+	puzzle,
 	PUZZLE_SIZE,
 	puzzleChecksum,
 } from "./@model/game.config";
@@ -43,6 +44,8 @@ export class Game {
 
 		for (let y = 0; y < PUZZLE_SIZE.HEIGHT; y++) {
 			for (let x = 0; x < PUZZLE_SIZE.WIDTH; x++) {
+				if (puzzle[y][x] === 0) continue;
+
 				const point = new Point(
 					x + ANSWER_START_POSITION.x,
 					y + ANSWER_START_POSITION.y,
