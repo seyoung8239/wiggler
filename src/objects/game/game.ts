@@ -9,6 +9,7 @@ import {
 	puzzleChecksum,
 } from "../../puzzles/1";
 import { Point } from "../../common/Point";
+import { MAP_SIZE } from "./@model/game.config";
 
 export class Game {
 	gameRenderer: GameRenderer;
@@ -53,13 +54,19 @@ export class Game {
 		this.isClear = true;
 	};
 
-	handleClear = () => {
-		console.log("clear");
+	handleClear = (ctx: CanvasRenderingContext2D) => {
+		ctx.font = "48px serif";
+		ctx.textAlign = "center";
+		ctx.fillText(
+			"CLEAR",
+			(MAP_SIZE.WIDTH * MAP_SIZE.UNIT) / 2,
+			(MAP_SIZE.HEIGHT * MAP_SIZE.UNIT) / 2 - 48,
+		);
 	};
 
 	render(ctx: CanvasRenderingContext2D) {
 		if (this.isClear) {
-			this.handleClear();
+			this.handleClear(ctx);
 			return;
 		}
 
