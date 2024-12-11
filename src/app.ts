@@ -30,8 +30,6 @@ class App {
 		this.canvas.width = this.stageWidth * this.pixelRatio;
 		this.canvas.height = this.stageHeight * this.pixelRatio;
 		this.ctx!.scale(this.pixelRatio, this.pixelRatio);
-
-		console.log("resize", this.canvas.width, this.canvas.height);
 	}
 
 	animate() {
