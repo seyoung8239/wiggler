@@ -84,6 +84,7 @@ export class Block {
 
 			ALL_DIRECTION.forEach((direction) => {
 				const next = Point.getMovedPoint(current, direction);
+				if (next.isOutOfMap) return;
 				if (visited[next.x][next.y]) return;
 				if (!this.hasBlockPart(next)) return;
 

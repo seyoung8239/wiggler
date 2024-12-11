@@ -1,3 +1,4 @@
+import { MAP_SIZE } from "../objects/game/@model/game.config";
 import { DIRECTION, type Direction } from "./direction/direction.constant";
 
 export class Point {
@@ -33,6 +34,15 @@ export class Point {
 	static isCollided(pointList1: Point[], pointList2: Point[]) {
 		return pointList1.some((point1) =>
 			pointList2.some((point2) => point1.isSamePoint(point2)),
+		);
+	}
+
+	get isOutOfMap() {
+		return (
+			this.x < 0 ||
+			this.x >= MAP_SIZE.WIDTH ||
+			this.y < 0 ||
+			this.y >= MAP_SIZE.HEIGHT
 		);
 	}
 }

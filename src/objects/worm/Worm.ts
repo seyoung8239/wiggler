@@ -67,6 +67,7 @@ export class Worm {
 	isNearObject(bodyPart: Point) {
 		return ALL_DIRECTION.some((direction) => {
 			const nearPoint = Point.getMovedPoint(bodyPart, direction);
+			if (nearPoint.isOutOfMap) return false;
 
 			const isPuzzleNear =
 				this.game.map[nearPoint.x][nearPoint.y] === MAP_TYPE.PUZZLE;
@@ -107,6 +108,7 @@ export class Worm {
 		if (isOppositeDirection(direction, this.currentDirection)) return false;
 
 		const nextHeadPoint = Point.getMovedPoint(this.bodyParts[0], direction);
+		if (nextHeadPoint.isOutOfMap) return false;
 		if (this.isCollidedWithGround([nextHeadPoint])) return false;
 		if (this.isCollidedWithPuzzle([nextHeadPoint])) return false;
 
