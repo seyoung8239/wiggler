@@ -48,6 +48,12 @@ export class Block {
 
 	public destroyBlockPart(blockPart: Point) {
 		this.removeBlockPart(blockPart);
+		if (this.blockParts.length === 0) {
+			this.game.blocks = this.game.blocks.filter(
+				(block) => block.id !== this.id,
+			);
+			return;
+		}
 
 		const seperatedBlockParts = this.getSeperatedBlockParts();
 		if (seperatedBlockParts.length === 0) return;
