@@ -64,6 +64,15 @@ export class Worm {
 		);
 	}
 
+	isStraightUp() {
+		if (this.currentDirection !== DIRECTION.UP) return false;
+
+		const [head, body, tail] = this.bodyParts;
+		if (head.y !== body.y - 1) return false;
+		if (body.y !== tail.y - 1) return false;
+
+		return true;
+	}
 	isNearObject(bodyPart: Point) {
 		return ALL_DIRECTION.some((direction) => {
 			const nearPoint = Point.getMovedPoint(bodyPart, direction);
@@ -111,6 +120,11 @@ export class Worm {
 		if (nextHeadPoint.isOutOfMap) return false;
 		if (this.isCollidedWithGround([nextHeadPoint])) return false;
 		if (this.isCollidedWithPuzzle([nextHeadPoint])) return false;
+
+		const [head, body] = this.bodyParts;
+		if (this.isStraightUp() && direction === DIRECTION.UP) {
+			if (!this.isNearObject(head) && !this.isNearObject(body)) return false;
+		}
 
 		return true;
 	}
