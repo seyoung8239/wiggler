@@ -6,8 +6,8 @@ import { isOppositeDirection } from "../../common/direction/direction.util";
 import { keyboardManager } from "../../common/keyboardManager/keyboardManager";
 import { Point } from "../../common/Point";
 import type { Game } from "../game/game";
-import { MAP_SIZE } from "../game/game.config";
-import { MAP_TYPE, type MapType } from "../game/game.constant";
+import { MAP_SIZE } from "../game/@model/game.config";
+import { MAP_TYPE, type MapType } from "../game/@model/game.constant";
 
 export class Worm {
 	currentDirection: Direction;

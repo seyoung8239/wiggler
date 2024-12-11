@@ -1,7 +1,7 @@
 import type { Block } from "../block/Block";
 import type { Worm } from "../worm/Worm";
-import { MAP_SIZE } from "./game.config";
-import { MAP_TYPE, type MapType } from "./game.constant";
+import { MAP_SIZE } from "./@model/game.config";
+import { MAP_TYPE, type MapType } from "./@model/game.constant";
 
 interface RenderArgs {
 	ctx: CanvasRenderingContext2D;
