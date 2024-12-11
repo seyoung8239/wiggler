@@ -1,4 +1,4 @@
-export * from "../../../puzzles/1";
+export * from "../../../puzzles/2";
 
 export const MAP_SIZE = {
 	WIDTH: 25,
