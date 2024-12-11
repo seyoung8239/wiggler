@@ -1,4 +1,5 @@
 import {
+	ALL_DIRECTION,
 	type Direction,
 	DIRECTION,
 } from "../../common/direction/direction.constant";
@@ -7,7 +8,7 @@ import { keyboardManager } from "../../common/keyboardManager/keyboardManager";
 import { Point } from "../../common/Point";
 import type { Game } from "../game/game";
 import { MAP_SIZE } from "../game/@model/game.config";
-import { MAP_TYPE, type MapType } from "../game/@model/game.constant";
+import { MAP_TYPE } from "../game/@model/game.constant";
 
 export class Worm {
 	currentDirection: Direction;
@@ -29,11 +30,6 @@ export class Worm {
 
 	private lastMoveTime = 0;
 	private moveThrottle = 300;
-
-	get gameMap(): MapType[][] {
-		return this.game.map;
-	}
-
 	handleKeyboardEvent() {
 		const currentTime = Date.now();
 		if (currentTime - this.lastMoveTime < this.moveThrottle) return;
@@ -43,41 +39,6 @@ export class Worm {
 		if (keyboardManager.isKeyPressed("KeyS")) this.move(DIRECTION.DOWN);
 		if (keyboardManager.isKeyPressed("KeyA")) this.move(DIRECTION.LEFT);
 		if (keyboardManager.isKeyPressed("KeyD")) this.move(DIRECTION.RIGHT);
-	}
-
-	move(direction: Direction) {
-		if (!this.canMove(direction)) return;
-
-		const nextHeadPoint = Point.getMovedPoint(this.bodyParts[0], direction);
-		this.currentDirection = direction;
-
-		const destroyBlockIfCollision = () => {
-			for (let i = 0; i < this.game.blocks.length; i++) {
-				if (!this.game.blocks[i].hasBlockPart(nextHeadPoint)) continue;
-				this.game.blocks[i].destroyBlockPart(nextHeadPoint);
-				break;
-			}
-		};
-		destroyBlockIfCollision();
-
-		const moveBodyParts = () => {
-			this.bodyParts[2] = this.bodyParts[1];
-			this.bodyParts[1] = this.bodyParts[0];
-			this.bodyParts[0] = nextHeadPoint;
-		};
-		moveBodyParts();
-	}
-	canMove(direction: Direction) {
-		if (isOppositeDirection(direction, this.currentDirection)) return false;
-		const nextHeadPoint = Point.getMovedPoint(this.bodyParts[0], direction);
-
-		if (
-			this.gameMap[nextHeadPoint.x][nextHeadPoint.y] === MAP_TYPE.GROUND ||
-			this.gameMap[nextHeadPoint.x][nextHeadPoint.y] === MAP_TYPE.PUZZLE
-		)
-			return false;
-
-		return true;
 	}
 
 	isColiidedWithObject(parts: Point[]) {
@@ -103,32 +64,51 @@ export class Worm {
 		);
 	}
 
-	shouldFall() {
-		const isNearObject = (bodyPart: Point) =>
-			[DIRECTION.UP, DIRECTION.DOWN, DIRECTION.LEFT, DIRECTION.RIGHT].some(
-				(direction) => {
-					const nearPoint = Point.getMovedPoint(bodyPart, direction);
+	isNearObject(bodyPart: Point) {
+		return ALL_DIRECTION.some((direction) => {
+			const nearPoint = Point.getMovedPoint(bodyPart, direction);
 
-					const isPuzzleNear =
-						this.gameMap[nearPoint.x][nearPoint.y] === MAP_TYPE.PUZZLE;
-					const isBlockNear = this.game.blocks.some((block) =>
-						block.hasBlockPart(nearPoint),
-					);
-
-					if (isPuzzleNear) return true;
-					if (isBlockNear) return true;
-
-					return false;
-				},
+			const isPuzzleNear =
+				this.game.map[nearPoint.x][nearPoint.y] === MAP_TYPE.PUZZLE;
+			const isBlockNear = this.game.blocks.some((block) =>
+				block.hasBlockPart(nearPoint),
 			);
 
-		const isStickToObject = this.bodyParts.slice(0, 2).some(isNearObject);
-		if (isStickToObject) return false;
+			if (isPuzzleNear) return true;
+			if (isBlockNear) return true;
 
-		const nextBodyParts = this.bodyParts.map((point) =>
-			Point.getMovedPoint(point, DIRECTION.DOWN),
-		);
-		if (this.isColiidedWithObject(nextBodyParts)) return false;
+			return false;
+		});
+	}
+
+	move(direction: Direction) {
+		if (!this.canMove(direction)) return;
+
+		const nextHeadPoint = Point.getMovedPoint(this.bodyParts[0], direction);
+		this.currentDirection = direction;
+
+		const moveBodyParts = () => {
+			this.bodyParts[2] = this.bodyParts[1];
+			this.bodyParts[1] = this.bodyParts[0];
+			this.bodyParts[0] = nextHeadPoint;
+		};
+		moveBodyParts();
+
+		const destroyBlockIfCollision = () => {
+			for (let i = 0; i < this.game.blocks.length; i++) {
+				if (!this.game.blocks[i].hasBlockPart(nextHeadPoint)) continue;
+				this.game.blocks[i].destroyBlockPart(nextHeadPoint);
+				break;
+			}
+		};
+		destroyBlockIfCollision();
+	}
+	canMove(direction: Direction) {
+		if (isOppositeDirection(direction, this.currentDirection)) return false;
+
+		const nextHeadPoint = Point.getMovedPoint(this.bodyParts[0], direction);
+		if (this.isCollidedWithGround([nextHeadPoint])) return false;
+		if (this.isCollidedWithPuzzle([nextHeadPoint])) return false;
 
 		return true;
 	}
@@ -142,15 +122,24 @@ export class Worm {
 			);
 		}
 	}
+	shouldFall() {
+		const isStickToObject = this.bodyParts
+			.slice(0, 2)
+			.some(this.isNearObject.bind(this));
+		if (isStickToObject) return false;
+
+		const nextBodyParts = this.bodyParts.map((point) =>
+			Point.getMovedPoint(point, DIRECTION.DOWN),
+		);
+		if (this.isColiidedWithObject(nextBodyParts)) return false;
+
+		return true;
+	}
 
 	animate(ctx: CanvasRenderingContext2D) {
 		this.handleKeyboardEvent();
 
 		this.handleFall();
-
-		this.bodyParts.forEach((point) => {
-			this.gameMap[point.x][point.y] = MAP_TYPE.WORM;
-		});
 
 		ctx.fillStyle = "sandybrown";
 		this.bodyParts.forEach(({ x, y }) => {
