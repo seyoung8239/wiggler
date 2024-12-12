@@ -12,19 +12,49 @@ body {
   background-color: #0d0b07;
 
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  color: #7a6344;
+}
+
+.stage-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  width: 400px;
+  font-size: 1.6rem;
+
+  font-family: "Rakkas", serif;
+}
+
+button {
+  color: #443726;
+  font-size: 1.8rem;
+
+  width: 32px;
+  height: 40px;
+
+  padding: 3px 3px 6px 3px;
+  border: 2px solid #443726;
+  border-radius: 5px;
+  text-align: center;
+  background-color: transparent;
+  text-decoration: none;
+  font-family: "Kirang Haerang", system-ui;
+
+  cursor: pointer;
 }
 
 .description {
-  color: #7a6344;
   text-align: center;
   font-size: 1.2rem;
   font-family: "Kirang Haerang", system-ui;
 }
 
 h3 {
+  color: wheat;
   margin: 1.2rem 0;
   font-size: 2.7rem;
   font-weight: 900;
@@ -34,7 +64,7 @@ h3 {
 .control {
   font-size: 1.5rem;
   margin-top: 1rem;
-  border: 1px dashed #7a6344;
+  border: 2px dashed #7a6344;
   padding: 15px;
   border-radius: 5px;
 }

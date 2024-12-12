@@ -13,8 +13,7 @@ class App {
   game;
 
   constructor() {
-    this.canvas = document.createElement("canvas");
-    document.body.appendChild(this.canvas);
+    this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
     this.ctx = this.canvas.getContext("2d")!;
 
     this.game = new Game();

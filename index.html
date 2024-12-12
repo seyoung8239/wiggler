@@ -16,11 +16,23 @@
     <title>Wiggler</title>
   </head>
   <body>
-    <script type="module" src="/src/app.ts"></script>
+    <nav class="stage-nav">
+      <button id="btn-prev">&lt;</button>
+      <div>
+        stage
+        <span id="stage-number">1</span>
+      </div>
+      <button id="btn-next">&gt;</button>
+    </nav>
+
+    <canvas id="canvas"></canvas>
+
     <div class="description">
       <h3>Wiggler</h3>
       <p>오른쪽 흙을 갉아먹어 왼쪽 조각과 똑같은 모양을 만들어보세요!</p>
       <p class="control">→ ← ↑ ↓ : 이동 &nbsp; &nbsp; &nbsp; x : reset</p>
     </div>
+
+    <script type="module" src="/src/app.ts" defer></script>
   </body>
 </html>
