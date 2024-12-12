@@ -34,7 +34,7 @@ export class Game {
     const urlParams = new URLSearchParams(window.location.search);
     const stageNumber = urlParams.get("stage") ?? "1";
 
-    import(`../../puzzles/${stageNumber}`).then(async (config) => {
+    import(`../../../public/puzzles/${stageNumber}.js`).then(async (config) => {
       await this.initConfig(config);
       this.initStage(stageNumber);
 
