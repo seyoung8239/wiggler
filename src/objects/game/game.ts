@@ -8,6 +8,15 @@ import { keyboardManager } from "../../common/keyboardManager/keyboardManager";
 import { MAP_SIZE, MAX_STAGE } from "./@model/game.config";
 
 export class Game {
+  gameRenderer: GameRenderer;
+  worm: Worm = new Worm(new Point(0, 0), this);
+  blocks: Block[] = [];
+  map: MapType[][] = [[]];
+  isClear = false;
+  isReady = false;
+
+  stageNumber: number = 1;
+
   puzzle: number[][] = [[]];
   puzzleChecksum: number = 0;
   PUZZLE_SIZE: { WIDTH: number; HEIGHT: number } = { WIDTH: 0, HEIGHT: 0 };
@@ -16,14 +25,6 @@ export class Game {
   WORM_START_POSITION: { x: number; y: number } = { x: 0, y: 0 };
   BLOCK_START_POSITION: { x: number; y: number } = { x: 0, y: 0 };
   ANSWER_START_POSITION: { x: number; y: number } = { x: 0, y: 0 };
-
-  gameRenderer: GameRenderer;
-  worm: Worm = new Worm(new Point(0, 0), this);
-  blocks: Block[] = [];
-  map: MapType[][] = [[]];
-  isClear = false;
-
-  stageNumber: number = 0;
 
   private _nextBlockId = 0;
 
@@ -44,6 +45,7 @@ export class Game {
       this.blocks = [initialBlock];
 
       this.bindEvent();
+      this.isReady = true;
     });
   }
 
@@ -96,7 +98,7 @@ export class Game {
     this.goToStageNumber();
   }
   goToPrevStage() {
-    if (this.stageNumber === 0) return;
+    if (this.stageNumber === 1) return;
     this.stageNumber -= 1;
     this.goToStageNumber();
   }
@@ -138,6 +140,7 @@ export class Game {
   };
 
   render(ctx: CanvasRenderingContext2D) {
+    if (!this.isReady) return;
     if (this.isClear) {
       this.handleClear(ctx);
       return;

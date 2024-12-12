@@ -1,4 +1,3 @@
-import { keyboardManager } from "./common/keyboardManager/keyboardManager";
 import { MAP_SIZE } from "./objects/game/@model/game.config";
 import { Game } from "./objects/game/game";
 
