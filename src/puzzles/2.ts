@@ -1,9 +1,9 @@
 export const puzzle = [
-	[1, 0, 0, 0],
-	[1, 0, 0, 0],
-	[1, 1, 1, 1],
-	[1, 0, 0, 1],
-	[1, 0, 0, 1],
+	[1, 1, 1, 1, 1],
+	[1, 0, 0, 0, 1],
+	[1, 0, 0, 0, 1],
+	[1, 0, 0, 0, 1],
+	[1, 1, 1, 1, 1],
 ];
 export const puzzleChecksum = puzzle.flat().reduce((acc, cur) => acc + cur, 0);
 
@@ -14,7 +14,7 @@ export const PUZZLE_SIZE = {
 
 export const BLOCK_SIZE = {
 	WIDTH: PUZZLE_SIZE.WIDTH,
-	HEIGHT: PUZZLE_SIZE.HEIGHT,
+	HEIGHT: PUZZLE_SIZE.HEIGHT + 1,
 };
 
 export const PUZZLE_START_POSITION = { x: 3, y: 10 };

@@ -21,13 +21,7 @@ class App {
     window.addEventListener("resize", this.resize.bind(this), false);
     this.resize();
 
-    this.bindEvent();
-
     requestAnimationFrame(this.animate.bind(this));
-  }
-
-  bindEvent() {
-    keyboardManager.bindKey("x", () => location.reload());
   }
 
   resize() {
