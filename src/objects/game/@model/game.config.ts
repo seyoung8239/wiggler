@@ -1,5 +1,3 @@
-export * from "../../../puzzles/3";
-
 export const MAP_SIZE = {
   WIDTH: 25,
   HEIGHT: 18,
