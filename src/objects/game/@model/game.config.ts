@@ -1,7 +1,7 @@
-export * from "../../../puzzles/10";
+export * from "../../../puzzles/5";
 
 export const MAP_SIZE = {
-	WIDTH: 25,
-	HEIGHT: 18,
-	UNIT: 20,
+  WIDTH: 25,
+  HEIGHT: 18,
+  UNIT: 20,
 } as const;
